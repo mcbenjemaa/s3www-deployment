@@ -1,6 +1,10 @@
 # Default values for s3www.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: ""
+
 
 fileToServeUrl: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYzhrcnV1NnJlZ3J3b3l3ZW83bG5iMGthNWYwZWwxMTIxbGQ3MjU4dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VdiQKDAguhDSi37gn1/giphy.gif"
 
@@ -48,9 +52,6 @@ image:
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
-# This is to override the chart name.
-nameOverride: ""
-fullnameOverride: ""
 
 # This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
 serviceAccount:
@@ -85,7 +86,7 @@ securityContext: {}
 # This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
   # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
-  type: ClusterIP
+  type: LoadBalancer
   # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
   port: 8080
 
@@ -156,6 +157,18 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+monitoring:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    path: /metrics
+    interval: 30s
+    scrapeTimeout: 10s
+    labels: {}
+    annotations: {}
+    metricRelabelings: []
+    relabelings: []
 
 minio:
   enabled: true
