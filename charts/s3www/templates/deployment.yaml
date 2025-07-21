@@ -32,6 +32,52 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: init-download-file
+          image: curlimages/curl
+          command:
+            - sh
+            - -c
+            - |
+              curl --fail -o /data/file-to-serve {{ .Values.fileToServeUrl | quote }} &&
+              [ -s /data/file-to-serve ] || (echo "File download failed" && exit 1)
+          volumeMounts:
+            - name: shared-data
+              mountPath: /data
+        - name: init-upload-file
+          image: minio/mc:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              TIMEOUT={{ .Values.upload.timeout | default 60 }}
+              ATTEMPTS=0
+              MAX_ATTEMPTS={{ .Values.upload.maxAttempts | default 12 }}
+              until ./bin/mc alias set minio $S3WWW_ENDPOINT $S3WWW_ACCESS_KEY $S3WWW_SECRET_KEY || [ $ATTEMPTS -ge $MAX_ATTEMPTS ]; do
+                echo "Retrying mc alias set ($ATTEMPTS/$MAX_ATTEMPTS)..."
+                sleep 5
+                ATTEMPTS=$((ATTEMPTS + 1))
+              done
+              [ $ATTEMPTS -lt $MAX_ATTEMPTS ] || (echo "mc alias set failed after $TIMEOUT seconds" && exit 1)
+
+              # mc alias set minio $S3WWW_ENDPOINT $S3WWW_ACCESS_KEY $S3WWW_SECRET_KEY ||
+              # (echo "mc alias set failed" && exit 1) &&
+              mc cp /data/file-to-serve minio/$S3WWW_BUCKET/file-to-serve || (echo "mc cp failed" && exit 1)
+          env:
+            - name: S3WWW_ENDPOINT
+              value: {{ .Values.config.endpoint | quote }}
+            - name: S3WWW_ACCESS_KEY
+              value: {{ .Values.config.accessKey | quote }}
+            - name: S3WWW_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.secretKeySecret.name }}
+                  key: {{ .Values.config.secretKeySecret.key }}
+            - name: S3WWW_BUCKET
+              value: {{ .Values.config.bucket | quote }}
+          volumeMounts:
+            - name: shared-data
+              mountPath: /data
       containers:
         - name: {{ .Chart.Name }}
           {{- with .Values.securityContext }}

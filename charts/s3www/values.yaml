@@ -4,10 +4,14 @@
 
 fileToServeUrl: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYzhrcnV1NnJlZ3J3b3l3ZW83bG5iMGthNWYwZWwxMTIxbGQ3MjU4dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VdiQKDAguhDSi37gn1/giphy.gif"
 
+upload:
+  timeout: 60
+  maxAttempts: 12
+
 # This is the configuration for the S3WWW application.
 config:
   # This is the endpoint that will be used by the application.
-  endpoint: "http://swww-minio:9000"
+  endpoint: "http://s3www-minio:9000"
   # This is the bucket name that will be used by the application.
   bucket: "s3www-data"
   # This is the access key that will be used by the application.
@@ -133,7 +137,9 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 # Additional volumes on the output Deployment definition.
-volumes: []
+volumes:
+  - name: shared-data
+    emptyDir: {}
 # - name: foo
 #   secret:
 #     secretName: mysecret
@@ -181,17 +187,15 @@ minio:
 
   # List of users to be created after minio install
   users:
-    - accessKey: console
-      secretKey: console123
-      policy: consoleAdmin
-    - accessKey: s3www
+    - accessKey: s3www-user
       existingSecret: s3www-secret
-      existingSecretKey: secretKey
-      policy: allow-read
+      existingSecretKey: userSecretKey
+      policy: readwrite
 
   ## List of service accounts to be created after minio install
   ##
   svcaccts:
-    - accessKey: accessKey
-      secretKey: secretKey
-      user: s3www-admin
+    - accessKey: s3www
+      existingSecret: s3www-secret
+      existingSecretKey: secretKey
+      user: s3www-user
