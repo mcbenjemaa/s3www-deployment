@@ -1,0 +1,33 @@
+fileToServeUrl: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYzhrcnV1NnJlZ3J3b3l3ZW83bG5iMGthNWYwZWwxMTIxbGQ3MjU4dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VdiQKDAguhDSi37gn1/giphy.gif"
+
+config:
+  endpoint: "http://s3www-minio:9000"
+  bucket: "s3www-data"
+  accessKey: "s3www"
+  secretKeySecret:
+    name: s3www-secret
+    key: secretKey
+  address:  "0.0.0.0:8080"
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: false
+#  className: ""
+#  annotations: {}
+#  hosts:
+#    - host: chart-example.local
+#      paths:
+#        - path: /
+#          pathType: ImplementationSpecific
+#  tls: []
+
+
+monitoring:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+
+minio:
+  enabled: true
