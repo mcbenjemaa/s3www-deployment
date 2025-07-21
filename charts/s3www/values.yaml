@@ -2,16 +2,16 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+fileToServeUrl: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYzhrcnV1NnJlZ3J3b3l3ZW83bG5iMGthNWYwZWwxMTIxbGQ3MjU4dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VdiQKDAguhDSi37gn1/giphy.gif"
+
 # This is the configuration for the S3WWW application.
 config:
   # This is the endpoint that will be used by the application.
-  endpoint: "https://s3.amazonaws.com"
+  endpoint: "http://swww-minio:9000"
   # This is the bucket name that will be used by the application.
-  bucket: "my-bucket"
+  bucket: "s3www-data"
   # This is the access key that will be used by the application.
-  accessKeySecret:
-    name: s3www-secret
-    key: accessKey
+  accessKey: "s3www"
   # This is the secret key that will be used by the application.
   secretKeySecret:
       name: s3www-secret
@@ -150,3 +150,48 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+minio:
+  enabled: true
+  mode: standalone
+  rootUser: s3www-admin
+  buckets:
+    - name: s3www-data
+      policy: none
+      purge: false
+  policies:
+   - name: allow-read
+     statements:
+       - effect: Allow  # this is the default
+         resources:
+           - 'arn:aws:s3:::s3www-data/*'
+         actions:
+           - "s3:GetObject"
+           - "s3:ListBucket"
+
+  persistence:
+    size: 5Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  # rootPassword: supersecret
+  # Changed the mc config path to '/tmp' from '/etc' as '/etc' is only writable by root and OpenShift will not permit this.
+  configPathmc: "/tmp/minio/mc/"
+
+  # List of users to be created after minio install
+  users:
+    - accessKey: console
+      secretKey: console123
+      policy: consoleAdmin
+    - accessKey: s3www
+      existingSecret: s3www-secret
+      existingSecretKey: secretKey
+      policy: allow-read
+
+  ## List of service accounts to be created after minio install
+  ##
+  svcaccts:
+    - accessKey: accessKey
+      secretKey: secretKey
+      user: s3www-admin

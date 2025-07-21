@@ -44,10 +44,7 @@ spec:
             - name: S3WWW_ENDPOINT
               value: {{ .Values.config.endpoint | quote }}
             - name: S3WWW_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.accessKeySecret.name }}
-                  key: {{ .Values.config.accessKeySecret.key }}
+              value: {{ .Values.config.accessKey | quote }}
             - name: S3WWW_SECRET_KEY
               valueFrom:
                 secretKeyRef:
