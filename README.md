@@ -2,7 +2,7 @@
 
 This repo holds a deployment setup for the s3www app and its MinIO dependency, built with Helm and Terraform.
 
-# Pre-requisites
+## Pre-requisites
 
 * Kubernetes cluster
 * Helm installed
@@ -35,7 +35,7 @@ kubectl get pods,svc -n s3www
 
 This will list all the pods and services in the `s3www` namespace, including the s3www app and MinIO.
 
-if you have set `LoadBalancer` service or an Ingress, please use it or use port-forwarding to access the services:
+if you have set `LoadBalancer` service or an Ingress, please use it or use port-forwarding to access the service:
 
 ```bash
 kubectl port-forward svc/s3www 8080:8080 -n s3www
@@ -110,6 +110,8 @@ monitoring:
   serviceMonitor:
     enabled: true
 ```
+
+To check more about the configuration options for the s3www app please refer to the [s3www Helm Chart documentation](./charts/s3www/README.md)
 
 ## Architecture
 

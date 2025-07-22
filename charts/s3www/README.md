@@ -1,0 +1,101 @@
+# s3www
+
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.0.0](https://img.shields.io/badge/AppVersion-v1.0.0-informational?style=flat-square)
+
+A Helm chart for S3WWW and MinIO as Dependency.
+
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| https://charts.min.io/ | minio(minio) | 5.4.0 |
+
+## Values
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| affinity | object | `{}` |  |
+| autoscaling.enabled | bool | `false` |  |
+| autoscaling.maxReplicas | int | `100` |  |
+| autoscaling.minReplicas | int | `1` |  |
+| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| config.accessKey | string | `"s3www"` |  |
+| config.address | string | `"0.0.0.0:8080"` |  |
+| config.bucket | string | `"s3www-data"` |  |
+| config.endpoint | string | `"http://s3www-minio:9000"` |  |
+| config.secretKeySecret.key | string | `"secretKey"` |  |
+| config.secretKeySecret.name | string | `"s3www-secret"` |  |
+| extraArgs | list | `[]` |  |
+| extraEnv | list | `[]` |  |
+| fileToServeUrl | string | `"https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYzhrcnV1NnJlZ3J3b3l3ZW83bG5iMGthNWYwZWwxMTIxbGQ3MjU4dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VdiQKDAguhDSi37gn1/giphy.gif"` |  |
+| fullnameOverride | string | `""` |  |
+| image.pullPolicy | string | `"IfNotPresent"` |  |
+| image.repository | string | `"y4m4/s3www"` |  |
+| image.tag | string | `"v1.0.0"` |  |
+| imagePullSecrets | list | `[]` |  |
+| ingress.annotations | object | `{}` |  |
+| ingress.className | string | `""` |  |
+| ingress.enabled | bool | `false` |  |
+| ingress.hosts[0].host | string | `"chart-example.local"` |  |
+| ingress.hosts[0].paths[0].path | string | `"/"` |  |
+| ingress.hosts[0].paths[0].pathType | string | `"ImplementationSpecific"` |  |
+| ingress.tls | list | `[]` |  |
+| livenessProbe.httpGet.path | string | `"/"` |  |
+| livenessProbe.httpGet.port | string | `"http"` |  |
+| minio.buckets[0].name | string | `"s3www-data"` |  |
+| minio.buckets[0].policy | string | `"none"` |  |
+| minio.buckets[0].purge | bool | `false` |  |
+| minio.configPathmc | string | `"/tmp/minio/mc/"` |  |
+| minio.enabled | bool | `true` |  |
+| minio.mode | string | `"standalone"` |  |
+| minio.persistence.size | string | `"5Gi"` |  |
+| minio.policies[0].name | string | `"allow-read"` |  |
+| minio.policies[0].statements[0].actions[0] | string | `"s3:GetObject"` |  |
+| minio.policies[0].statements[0].actions[1] | string | `"s3:ListBucket"` |  |
+| minio.policies[0].statements[0].effect | string | `"Allow"` |  |
+| minio.policies[0].statements[0].resources[0] | string | `"arn:aws:s3:::s3www-data/*"` |  |
+| minio.resources.requests.cpu | string | `"100m"` |  |
+| minio.resources.requests.memory | string | `"128Mi"` |  |
+| minio.rootUser | string | `"s3www-admin"` |  |
+| minio.svcaccts[0].accessKey | string | `"s3www"` |  |
+| minio.svcaccts[0].existingSecret | string | `"s3www-secret"` |  |
+| minio.svcaccts[0].existingSecretKey | string | `"secretKey"` |  |
+| minio.svcaccts[0].user | string | `"s3www-user"` |  |
+| minio.users[0].accessKey | string | `"s3www-user"` |  |
+| minio.users[0].existingSecret | string | `"s3www-secret"` |  |
+| minio.users[0].existingSecretKey | string | `"userSecretKey"` |  |
+| minio.users[0].policy | string | `"readwrite"` |  |
+| monitoring.enabled | bool | `true` |  |
+| monitoring.serviceMonitor.annotations | object | `{}` |  |
+| monitoring.serviceMonitor.enabled | bool | `true` |  |
+| monitoring.serviceMonitor.interval | string | `"30s"` |  |
+| monitoring.serviceMonitor.labels | object | `{}` |  |
+| monitoring.serviceMonitor.metricRelabelings | list | `[]` |  |
+| monitoring.serviceMonitor.path | string | `"/metrics"` |  |
+| monitoring.serviceMonitor.relabelings | list | `[]` |  |
+| monitoring.serviceMonitor.scrapeTimeout | string | `"10s"` |  |
+| nameOverride | string | `""` |  |
+| nodeSelector | object | `{}` |  |
+| podAnnotations | object | `{}` |  |
+| podLabels | object | `{}` |  |
+| podSecurityContext | object | `{}` |  |
+| readinessProbe.httpGet.path | string | `"/"` |  |
+| readinessProbe.httpGet.port | string | `"http"` |  |
+| replicaCount | int | `1` |  |
+| resources | object | `{}` |  |
+| securityContext | object | `{}` |  |
+| service.port | int | `8080` |  |
+| service.type | string | `"LoadBalancer"` |  |
+| serviceAccount.annotations | object | `{}` |  |
+| serviceAccount.automount | bool | `true` |  |
+| serviceAccount.create | bool | `false` |  |
+| serviceAccount.name | string | `""` |  |
+| tolerations | list | `[]` |  |
+| upload.maxAttempts | int | `12` |  |
+| upload.timeout | int | `60` |  |
+| volumeMounts | list | `[]` |  |
+| volumes[0].emptyDir | object | `{}` |  |
+| volumes[0].name | string | `"shared-data"` |  |
+
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)
